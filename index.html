@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Smart Home Control</title>
+
+
+<style>
+
+/* =========================================
+   GLOBAL
+========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+
+    margin: 0;
+
+    font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+
+    background:
+    linear-gradient(
+        135deg,
+        #07111f,
+        #0f172a,
+        #111827
+    );
+
+    color: #ffffff;
+
+    min-height: 100vh;
+
+}
+
+
+/* =========================================
+   MAIN CONTAINER
+========================================= */
+
+.container {
+
+    width: 100%;
+
+    max-width: 1100px;
+
+    margin: auto;
+
+    padding: 25px;
+
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.logo h1 {
+
+    margin: 0;
+
+    font-size: 30px;
+
+    letter-spacing: -1px;
+
+}
+
+
+.logo p {
+
+    margin: 6px 0 0;
+
+    color: #94a3b8;
+
+    font-size: 14px;
+
+}
+
+
+.system-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 10px 16px;
+
+    background:
+    rgba(15, 23, 42, 0.8);
+
+    border: 1px solid
+    rgba(255,255,255,0.08);
+
+    border-radius: 30px;
+
+    font-size: 13px;
+
+}
+
+
+.status-dot {
+
+    width: 9px;
+
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: #22c55e;
+
+    box-shadow:
+    0 0 10px #22c55e;
+
+}
+
+
+/* =========================================
+   CONTROL CARDS
+========================================= */
+
+.control-grid {
+
+    display: grid;
+
+    grid-template-columns:
+    repeat(2, 1fr);
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.card {
+
+    background:
+    rgba(15, 23, 42, 0.88);
+
+    border: 1px solid
+    rgba(255,255,255,0.07);
+
+    border-radius: 20px;
+
+    padding: 24px;
+
+    box-shadow:
+    0 15px 40px
+    rgba(0,0,0,0.25);
+
+    backdrop-filter:
+    blur(10px);
+
+}
+
+
+.device-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+}
+
+
+.device-number {
+
+    color: #64748b;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    letter-spacing: 1px;
+
+}
+
+
+.device-name {
+
+    font-size: 21px;
+
+    font-weight: 700;
+
+    margin-top: 6px;
+
+}
+
+
+.device-description {
+
+    color: #94a3b8;
+
+    font-size: 13px;
+
+    margin-top: 6px;
+
+}
+
+
+.control-bottom {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-top: 25px;
+
+}
+
+
+.state-text {
+
+    font-size: 14px;
+
+    color: #94a3b8;
+
+}
+
+
+.state-text span {
+
+    color: #f87171;
+
+    font-weight: 700;
+
+}
+
+
+.state-text.on span {
+
+    color: #4ade80;
+
+}
+
+
+/* =========================================
+   SWITCH
+========================================= */
+
+.switch {
+
+    position: relative;
+
+    width: 64px;
+
+    height: 34px;
+
+}
+
+
+.switch input {
+
+    display: none;
+
+}
+
+
+.slider {
+
+    position: absolute;
+
+    inset: 0;
+
+    cursor: pointer;
+
+    background: #334155;
+
+    border-radius: 40px;
+
+    transition: 0.25s;
+
+}
+
+
+.slider:before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 26px;
+
+    height: 26px;
+
+    left: 4px;
+
+    top: 4px;
+
+    background: white;
+
+    border-radius: 50%;
+
+    transition: 0.25s;
+
+    box-shadow:
+    0 2px 8px
+    rgba(0,0,0,0.4);
+
+}
+
+
+.switch input:checked + .slider {
+
+    background: #22c55e;
+
+}
+
+
+.switch input:checked + .slider:before {
+
+    transform:
+    translateX(30px);
+
+}
+
+
+/* =========================================
+   PZEM SECTION
+========================================= */
+
+.section-title {
+
+    margin-bottom: 18px;
+
+}
+
+
+.section-title h2 {
+
+    margin: 0;
+
+    font-size: 20px;
+
+}
+
+
+.section-title p {
+
+    margin: 5px 0 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+}
+
+
+.pzem-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    background:
+    rgba(34,197,94,0.1);
+
+    color: #4ade80;
+
+    font-size: 12px;
+
+    margin-top: 12px;
+
+}
+
+
+.pzem-grid {
+
+    display: grid;
+
+    grid-template-columns:
+    repeat(3, 1fr);
+
+    gap: 15px;
+
+}
+
+
+.metric {
+
+    padding: 20px;
+
+    border-radius: 16px;
+
+    background:
+    rgba(30,41,59,0.75);
+
+    border: 1px solid
+    rgba(255,255,255,0.05);
+
+}
+
+
+.metric-label {
+
+    color: #94a3b8;
+
+    font-size: 13px;
+
+}
+
+
+.metric-value {
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+    margin-top: 8px;
+
+}
+
+
+.metric-unit {
+
+    color: #64748b;
+
+    font-size: 12px;
+
+    margin-top: 3px;
+
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.footer {
+
+    text-align: center;
+
+    color: #475569;
+
+    font-size: 12px;
+
+    margin-top: 25px;
+
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media(max-width: 700px) {
+
+    .container {
+
+        padding: 15px;
+
+    }
+
+    .header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+    .control-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .pzem-grid {
+
+        grid-template-columns:
+        repeat(2, 1fr);
+
+    }
+
+}
+
+
+@media(max-width: 430px) {
+
+    .pzem-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<!-- HEADER -->
+
+<div class="header">
+
+<div class="logo">
+
+<h1>Smart Home</h1>
+
+<p>ESP32 Local Automation System</p>
+
+</div>
+
+
+<div class="system-status">
+
+<div class="status-dot"></div>
+
+<span>System Online</span>
+
+</div>
+
+</div>
+
+
+<!-- =====================================
+     DEVICE CONTROLS
+===================================== -->
+
+<div class="control-grid">
+
+
+<!-- RELAY 1 -->
+
+<div class="card">
+
+<div class="device-header">
+
+<div>
+
+<div class="device-number">
+DEVICE 01
+</div>
+
+<div class="device-name">
+Load 1
+</div>
+
+<div class="device-description">
+PZEM monitored load
+</div>
+
+</div>
+
+</div>
+
+
+<div class="control-bottom">
+
+<div
+class="state-text"
+id="state1">
+
+Status:
+<span>OFF</span>
+
+</div>
+
+
+<label class="switch">
+
+<input
+type="checkbox"
+id="relay1"
+onchange="setRelay(1,this.checked)">
+
+<span class="slider"></span>
+
+</label>
+
+</div>
+
+</div>
+
+
+<!-- RELAY 2 -->
+
+<div class="card">
+
+<div class="device-header">
+
+<div>
+
+<div class="device-number">
+DEVICE 02
+</div>
+
+<div class="device-name">
+Load 2
+</div>
+
+<div class="device-description">
+Relay control only
+</div>
+
+</div>
+
+</div>
+
+
+<div class="control-bottom">
+
+<div
+class="state-text"
+id="state2">
+
+Status:
+<span>OFF</span>
+
+</div>
+
+
+<label class="switch">
+
+<input
+type="checkbox"
+id="relay2"
+onchange="setRelay(2,this.checked)">
+
+<span class="slider"></span>
+
+</label>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<!-- =====================================
+     PZEM
+===================================== -->
+
+<div class="card">
+
+
+<div class="section-title">
+
+<h2>Live Energy Monitoring</h2>
+
+<p>
+PZEM-004T • Device 01 / Load 1
+</p>
+
+
+<div class="pzem-status">
+
+<div class="status-dot"></div>
+
+<span id="pzemStatus">
+PZEM Connected
+</span>
+
+</div>
+
+</div>
+
+
+<div class="pzem-grid">
+
+
+<!-- VOLTAGE -->
+
+<div class="metric">
+
+<div class="metric-label">
+Voltage
+</div>
+
+<div
+class="metric-value"
+id="voltage">
+
+--.-
+
+</div>
+
+<div class="metric-unit">
+Volts (V)
+</div>
+
+</div>
+
+
+<!-- CURRENT -->
+
+<div class="metric">
+
+<div class="metric-label">
+Current
+</div>
+
+<div
+class="metric-value"
+id="current">
+
+--.---
+
+</div>
+
+<div class="metric-unit">
+Amps (A)
+</div>
+
+</div>
+
+
+<!-- POWER -->
+
+<div class="metric">
+
+<div class="metric-label">
+Active Power
+</div>
+
+<div
+class="metric-value"
+id="power">
+
+--.-
+
+</div>
+
+<div class="metric-unit">
+Watts (W)
+</div>
+
+</div>
+
+
+<!-- ENERGY -->
+
+<div class="metric">
+
+<div class="metric-label">
+Energy
+</div>
+
+<div
+class="metric-value"
+id="energy">
+
+--.---
+
+</div>
+
+<div class="metric-unit">
+kWh
+</div>
+
+</div>
+
+
+<!-- FREQUENCY -->
+
+<div class="metric">
+
+<div class="metric-label">
+Frequency
+</div>
+
+<div
+class="metric-value"
+id="frequency">
+
+--.-
+
+</div>
+
+<div class="metric-unit">
+Hertz (Hz)
+</div>
+
+</div>
+
+
+<!-- POWER FACTOR -->
+
+<div class="metric">
+
+<div class="metric-label">
+Power Factor
+</div>
+
+<div
+class="metric-value"
+id="pf">
+
+--.--
+
+</div>
+
+<div class="metric-unit">
+PF
+</div>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+<div class="footer">
+
+ESP32 • PZEM-004T • Local Network
+
+</div>
+
+
+</div>
+
+
+
+<style>
+#loginGate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:#080d18;color:#f4f7ff;font-family:Arial,sans-serif}
+#loginCard{width:min(420px,100%);padding:28px;border:1px solid #26344b;border-radius:18px;background:#111a2a;box-shadow:0 20px 60px #0008}
+#loginCard h2{margin:0 0 8px;font-size:24px}#loginCard p{color:#aab7cc;font-size:14px;line-height:1.5}
+#loginCard input{display:block;width:100%;margin:12px 0;padding:13px;border:1px solid #34445e;border-radius:9px;background:#0b1220;color:#fff;font-size:15px}
+#loginCard button{width:100%;padding:13px;border:0;border-radius:9px;background:#4f7cff;color:white;font-weight:700;font-size:15px;cursor:pointer}
+#loginMessage{min-height:18px;color:#ff9b9b;font-size:13px;margin-top:10px}
+#logoutButton{position:fixed;right:14px;top:14px;z-index:1000;border:1px solid #41516a;border-radius:8px;background:#182338;color:#fff;padding:8px 12px;cursor:pointer}
+</style>
+<div id="loginGate"><div id="loginCard"><h2>Smart Home Login</h2><p>Sign in with the dashboard Firebase account to control your devices.</p><form id="loginForm"><input id="loginEmail" type="email" placeholder="Email address" autocomplete="username" required><input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password" required><button type="submit">Sign in</button></form><div id="loginMessage" role="status"></div></div></div>
+<button id="logoutButton" style="display:none" onclick="signOutDashboard()">Sign out</button>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyA65B2elhDCduN3jzwv5FdlorU7qEmEdWc",
+  authDomain: "esp-32-home-automation-53f67.firebaseapp.com",
+  databaseURL: "https://esp-32-home-automation-53f67-default-rtdb.firebaseio.com",
+  projectId: "esp-32-home-automation-53f67",
+  storageBucket: "esp-32-home-automation-53f67.firebasestorage.app",
+  messagingSenderId: "1022172460985",
+  appId: "1:1022172460985:web:fb53e9ecfb5a1af4d62868",
+  measurementId: "G-V140R93DQX"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+let commandRef = null;
+let telemetryRef = null;
+
+function showLogin(message='') {
+  document.getElementById('loginGate').style.display = 'flex';
+  document.getElementById('logoutButton').style.display = 'none';
+  document.getElementById('loginMessage').textContent = message;
+}
+function showDashboard() {
+  document.getElementById('loginGate').style.display = 'none';
+  document.getElementById('logoutButton').style.display = 'block';
+}
+document.getElementById('loginForm').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const msg = document.getElementById('loginMessage');
+  msg.textContent = 'Signing in…';
+  try {
+    await auth.signInWithEmailAndPassword(
+      document.getElementById('loginEmail').value.trim(),
+      document.getElementById('loginPassword').value
+    );
+    msg.textContent = '';
+  } catch (error) {
+    msg.textContent = 'Sign-in failed. Check the email and password.';
+  }
+});
+async function signOutDashboard() {
+  if (commandRef) commandRef.off();
+  if (telemetryRef) telemetryRef.off();
+  await auth.signOut();
+}
+auth.onAuthStateChanged((user) => {
+  if (!user) {
+    if (commandRef) commandRef.off();
+    if (telemetryRef) telemetryRef.off();
+    commandRef = telemetryRef = null;
+    showLogin();
+    return;
+  }
+  showDashboard();
+  commandRef = db.ref('commands');
+  telemetryRef = db.ref('telemetry');
+  commandRef.on('value', (snapshot) => {
+    const data = snapshot.val() || {};
+    if (typeof data.relay1 === 'boolean') renderRelay(1, data.relay1);
+    if (typeof data.relay2 === 'boolean') renderRelay(2, data.relay2);
+  }, (error) => console.error('Command read failed:', error.message));
+  telemetryRef.on('value', (snapshot) => {
+    const data = snapshot.val();
+    if (!data) return;
+    if (typeof data.relay1 === 'boolean') renderRelay(1, data.relay1);
+    if (typeof data.relay2 === 'boolean') renderRelay(2, data.relay2);
+    for (const key of ['voltage','current','power','energy','frequency','pf']) {
+      if (data[key] !== undefined && document.getElementById(key)) document.getElementById(key).textContent = data[key];
+    }
+    if (document.getElementById('pzemStatus')) document.getElementById('pzemStatus').textContent = data.pzem ? 'PZEM Connected' : 'PZEM Not Detected';
+  }, (error) => console.error('Telemetry read failed:', error.message));
+});
+function renderRelay(channel, state) {
+  const checkbox = document.getElementById('relay' + channel);
+  const status = document.getElementById('state' + channel);
+  if (checkbox) checkbox.checked = state;
+  if (status) {
+    status.innerHTML = 'Status: <span>' + (state ? 'ON' : 'OFF') + '</span>';
+    status.classList.toggle('on', state);
+  }
+}
+async function setRelay(channel, state) {
+  if (!auth.currentUser) { showLogin('Please sign in first.'); return; }
+  try {
+    await db.ref('commands/relay' + channel).set(!!state);
+  } catch (error) {
+    console.error('Relay command failed:', error);
+    alert('Could not send the command. Check your internet connection and Firebase rules.');
+    updateData();
+  }
+}
+function updateData() { /* Live data is delivered by Firebase Realtime Database. */ }
+</script>
+
+
+</body>
+
+</html>
